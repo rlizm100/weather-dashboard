@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+      integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
+      crossorigin="anonymous"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <title>Weather Dashboard</title>
+  </head>
+
+  <body>
+    <header class="jumbotron">
+      <h1 class="display-3">Weather Dashboard</h1>
+    </header>
+   
+    <div class="container-fluid">
+       <section id = "search">
+           <div>
+        <form role="search" class="bd-search d-flex align-items-center">
+            <input type="search" class="form-control" id="search-input" placeholder="Search...">
+            <button id="add-city" type="submit">Search</button>
+          </form>
+           </div>
+           <br></br>
+          <div class="card" style="width: 90%;">
+            <ul id = "citylist" class="list-group list-group-flush">
+              
+            </ul>
+          </div>
+       </section>
+       <section id="city">
+            <div class = "cityInfo">
+                <h2>City and Date</h2>
+            </div>
+                <div class="temp"></div>
+                <div class="humidity"></div>
+                 <div class="wind"></div>
+                 <div class="uv"></div>
+            
+      </section>
+      <br></br>
+      <section id = "forecast">
+          <div>
+                <h2>5 Day Forecast</h2>
+                <div class="row">
+                    <div class="col-sm dayone">
+                      </div>
+                    <div class="col-sm daytwo">
+                     </div>
+                    <div class="col-sm daythree">
+                     </div>
+                    <div class="col-sm dayfour">
+                     </div>
+                    <div class="col-sm dayfive">
+                    </div>
+                  </div>
+          </div>
+      </section>
+
+
+        </div>
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+
+    <script>
+    
+    //Get date
+    var today = new Date();
+    var dd = today.getDate();
+
+    var mm = today.getMonth()+1; 
+    var yyyy = today.getFullYear();
+    var d1 = dd + parseInt(1)
+    var d2 = dd + parseInt(2)
+    var d3 = dd + parseInt(3)
+    var d4 = dd + parseInt(4)
+    var d5 = dd + parseInt(5)
+
+
+    if(dd<10) 
+    {
+    dd='0'+dd;
+    } 
+
+    if(mm<10) 
+    {
+    mm='0'+mm;
+    } 
+
+    today = mm+'/'+dd+'/'+yyyy;
+    day1 = mm+'/'+d1+'/'+yyyy;
+    day2 = mm+'/'+d2+'/'+yyyy;
+    day3 = mm+'/'+d3+'/'+yyyy;
+    day4 = mm+'/'+d4+'/'+yyyy;
+    day5 = mm+'/'+d5+'/'+yyyy;
+    console.log(today);
+
+// URL we need to query the database
+var city = $("#search-input").val().trim();
+
+$("#add-city").on("click", function(event) {
+        event.preventDefault();
+        
+        getWeather()
+        
+      });
+
+
+function getWeather(){
+
+var APIKey = "194fe1060895ef146535ea2cd8a7361b";
+var city = $("#search-input").val().trim();
+var queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=imperial&appid=" + APIKey;
+
+var forecastURL = "https://api.openweathermap.org/data/2.5/forecast?" + 
+"q=" + city+ "&units=imperial&appid=" + APIKey;
+
+
+   
+// Here we run our AJAX call to the OpenWeatherMap API
+$.ajax({
+      url: queryURL,
+      method: "GET"
+    })
+      // We store all of the retrieved data inside of an object called "response"
+      .then(function(response) {
+
+        // Log the queryURL
+        console.log(queryURL);
+
+        // Log the resulting object
+        console.log(response);
+    
+    var image1 = "https://openweathermap.org/img/wn/" + response.weather[0].icon + "@2x.png"; 
+   
+// Transfer content to HTML
+    $(".cityInfo").html("<h1><img src=" + image1 + ">" + response.name + " Weather Details " + today + "</h1>");
+    $(".temp").text("Temperature: " + response.main.temp + "°F");
+    $(".humidity").text("Humidity: " + response.main.humidity + "%");
+    $(".wind").text("Wind Speed: " + response.wind.speed + "MPH");
+    
+    var lat = response.coord.lat;
+    var lon = response.coord.lon;
+    var uvURL = "http://api.openweathermap.org/data/2.5/uvi?appid=" +APIKey + "&lat=" + lat + "&lon=" + lon
+
+    $.ajax({
+      url: uvURL,
+      method: "GET"
+    })
+      // We store all of the retrieved data inside of an object called "response"
+      .then(function(response) {
+
+        // Log the queryURL
+        console.log(queryURL);
+
+        // Log the resulting object
+        console.log(response);
+    
+       
+// Transfer content to HTML
+     $(".uv").text("UV Index: " + response.value);
+
+
+    //if(parseInt(response.wind.speed)<parseInt(3)){
+      //  $(".uv").css("background-color", "green");
+   // }else if(parseInt(2)<parseInt(response.wind.speed)<parseInt(6)){
+       // $(".uv").css("backgroundcolor", "yellow")
+    //}else{
+       // $(".uv").css("backgroundcolor", "red")
+   // }
+});
+
+});
+
+//to get the five day forecast
+$.ajax({
+  url: forecastURL,
+  method: "GET"
+})
+  // We store all of the retrieved data inside of an object called "response"
+  .then(function(response) {
+
+// Log the queryURL
+console.log(queryURL);
+
+// Log the resulting object
+console.log(response);
+var image1 = "https://openweathermap.org/img/wn/" + response.list[5].weather[0].icon + "@2x.png"; 
+var image2 = "https://openweathermap.org/img/wn/" + response.list[11].weather[0].icon + "@2x.png";
+var image3 = "https://openweathermap.org/img/wn/" + response.list[21].weather[0].icon + "@2x.png";
+var image4 = "https://openweathermap.org/img/wn/" + response.list[28].weather[0].icon + "@2x.png";
+var image5 = "https://openweathermap.org/img/wn/" + response.list[26].weather[0].icon + "@2x.png";
+
+
+//Transfer content to HTML
+     $(".dayone").html("<h4>" + day1 + "</h4>");
+     $(".dayone").append("<img src=" + image1 + ">");
+     $(".dayone").append("<p>Temp: " + response.list[5].main.temp + "°F</P>");
+    $(".dayone").append("<p>Humidity: " + response.list[5].main.humidity + "%</P>");
+    $(".daytwo").html("<h4>" + day2 + "</h4>");
+    $(".daytwo").append("<img src=" + image2 + ">");
+    $(".daytwo").append("<p>Temp: " + response.list[11].main.temp + "°F</P>");
+    $(".daytwo").append("<p>Humidity: " + response.list[11].main.humidity + "%</P>");
+    $(".daythree").html("<h4>" + day3 + "</h4>");
+    $(".daythree").append("<img src=" + image3 + ">");
+    $(".daythree").append("<p>Temp: " + response.list[21].main.temp + "°F</P>");
+    $(".daythree").append("<p>Humidity: " + response.list[21].main.humidity + "%</P>");
+    $(".dayfour").html("<h4>" + day4 + "</h4>");
+    $(".dayfour").append("<img src=" + image4 + ">");
+    $(".dayfour").append("<p>Temp: " + response.list[28].main.temp + "°F</P>");
+    $(".dayfour").append("<p>Humidity: " + response.list[28].main.humidity + "%</P>");
+    $(".dayfive").html("<h4>" + day5 + "</h4>");
+    $(".dayfive").append("<img src=" + image5 + ">");
+    $(".dayfive").append("<p>Temp: " + response.list[36].main.temp + "°F</P>");
+    $(".dayfive").append("<p>Humidity: " + response.list[36].main.humidity + "%</P>");
+
+});
+}
+
+
+var citylist = []
+//localStorage.setItem("city", JSON.stringify(citylist));   
+
+$("#add-city").on("click", function(event){
+    localStorage.setItem("city", JSON.stringify(citylist)); 
+    var city = $("#search-input").val().trim();                       
+    citylist.push(city); 
+});
+
+// This function handles events search button is clicked
+$("#add-city").on("click", function(event) {
+        event.preventDefault();
+        // This line grabs the input from the textbox
+        var city = $("#search-input").val().trim();
+       // city.addClass("list-group-item");
+         
+         $("#citylist").append(`<li class = "list-group-item" data-city = "`+city+`">` + city + `</li>`);
+         $(document).on("click", ".list-group-item", lookupcity);
+         localStorage.setItem("city", JSON.stringify(citylist)); 
+         citylist.push(city);
+      });
+    
+
+//render the cities in local storage
+ function renderCities() {
+   var storedcity = JSON.parse(localStorage.getItem("city"));
+    citylist = storedcity
+    var city = citylist[i];
+  for (var i = 0; i < citylist.length; i++) {
+    var city = citylist[i];
+    $("#citylist").append(`<li class = "list-group-item" data-city = "`+city+`">` + city + `</li>`);
+    $(document).on("click", ".list-group-item", lookupcity);
+  }
+}
+
+renderCities()
+
+
+//lookup the city in the search list when clicked on
+function lookupcity(event){
+    var APIKey = "194fe1060895ef146535ea2cd8a7361b";
+var city = $(this).attr("data-city");
+var queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=imperial&appid=" + APIKey;
+
+var forecastURL = "https://api.openweathermap.org/data/2.5/forecast?" + 
+"q=" + city+ "&units=imperial&appid=" + APIKey;
+   
+// Here we run our AJAX call to the OpenWeatherMap API
+$.ajax({
+      url: queryURL,
+      method: "GET"
+    })
+      // We store all of the retrieved data inside of an object called "response"
+      .then(function(response) {
+
+        // Log the queryURL
+        console.log(queryURL);
+
+        // Log the resulting object
+        console.log(response);
+        var image1 = "https://openweathermap.org/img/wn/" + response.weather[0].icon + "@2x.png"; 
+
+// Transfer content to HTML
+    $(".cityInfo").html("<h1><img src=" + image1 + ">" + response.name + " Weather Details " + today + "</h1>");
+    $(".temp").text("Temperature: " + response.main.temp + "°F");
+    $(".humidity").text("Humidity: " + response.main.humidity + "%");
+    $(".wind").text("Wind Speed: " + response.wind.speed + "MPH");
+    
+    var lat = response.coord.lat;
+    var lon = response.coord.lon;
+    var uvURL = "http://api.openweathermap.org/data/2.5/uvi?appid=" +APIKey + "&lat=" + lat + "&lon=" + lon
+
+    $.ajax({
+      url: uvURL,
+      method: "GET"
+    })
+      // We store all of the retrieved data inside of an object called "response"
+      .then(function(response) {
+
+        // Log the queryURL
+        console.log(queryURL);
+
+        // Log the resulting object
+        console.log(response);
+    
+       
+// Transfer content to HTML
+     $(".uv").text("UV Index: " + response.value);
+
+    });  
+
+});
+
+//to get the five day forecast
+$.ajax({
+  url: forecastURL,
+  method: "GET"
+})
+  // We store all of the retrieved data inside of an object called "response"
+  .then(function(response) {
+
+// Log the queryURL
+console.log(queryURL);
+
+// Log the resulting object
+console.log(response);
+var image1 = "https://openweathermap.org/img/wn/" + response.list[5].weather[0].icon + "@2x.png"; 
+var image2 = "https://openweathermap.org/img/wn/" + response.list[11].weather[0].icon + "@2x.png";
+var image3 = "https://openweathermap.org/img/wn/" + response.list[21].weather[0].icon + "@2x.png";
+var image4 = "https://openweathermap.org/img/wn/" + response.list[28].weather[0].icon + "@2x.png";
+var image5 = "https://openweathermap.org/img/wn/" + response.list[26].weather[0].icon + "@2x.png";
+
+//Transfer content to HTML
+$(".dayone").html("<h4>" + day1 + "</h4>");
+     $(".dayone").append("<img src=" + image1 + ">");
+     $(".dayone").append("<p>Temp: " + response.list[5].main.temp + "°F</P>");
+    $(".dayone").append("<p>Humidity: " + response.list[5].main.humidity + "%</P>");
+    $(".daytwo").html("<h4>" + day2 + "</h4>");
+    $(".daytwo").append("<img src=" + image2 + ">");
+    $(".daytwo").append("<p>Temp: " + response.list[11].main.temp + "°F</P>");
+    $(".daytwo").append("<p>Humidity: " + response.list[11].main.humidity + "%</P>");
+    $(".daythree").html("<h4>" + day3 + "</h4>");
+    $(".daythree").append("<img src=" + image3 + ">");
+    $(".daythree").append("<p>Temp: " + response.list[21].main.temp + "°F</P>");
+    $(".daythree").append("<p>Humidity: " + response.list[21].main.humidity + "%</P>");
+    $(".dayfour").html("<h4>" + day4 + "</h4>");
+    $(".dayfour").append("<img src=" + image4 + ">");
+    $(".dayfour").append("<p>Temp: " + response.list[28].main.temp + "°F</P>");
+    $(".dayfour").append("<p>Humidity: " + response.list[28].main.humidity + "%</P>");
+    $(".dayfive").html("<h4>" + day5 + "</h4>");
+    $(".dayfive").append("<img src=" + image5 + ">");
+    $(".dayfive").append("<p>Temp: " + response.list[36].main.temp + "°F</P>");
+    $(".dayfive").append("<p>Humidity: " + response.list[36].main.humidity + "%</P>");
+
+});
+
+
+};
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,45 @@
+
+.jumbotron{
+    background-image: url(weather.jpg);
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+h1{
+    text-align: center;
+}
+
+#search{
+    width: 20%;
+    float: left;
+    background-color: rgb(208, 233, 247);
+    padding: 1%;
+    
+}
+
+#city{
+    width: 75%;
+    float: right;
+    border-style: ridge;
+    margin-bottom: 5%;
+    padding: 2%;
+    line-height: 50px;
+}
+
+#forecast{
+    width: 75%;
+    float: right;
+    padding: 1%;
+}
+
+.col-sm{
+    background-color: rgb(9, 77, 202);
+    margin:1%;
+    color: white;
+}
+
+
+
+
+
+
