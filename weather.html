@@ -179,13 +179,6 @@ $.ajax({
      $(".uv").text("UV Index: " + response.value);
 
 
-    //if(parseInt(response.wind.speed)<parseInt(3)){
-      //  $(".uv").css("background-color", "green");
-   // }else if(parseInt(2)<parseInt(response.wind.speed)<parseInt(6)){
-       // $(".uv").css("backgroundcolor", "yellow")
-    //}else{
-       // $(".uv").css("backgroundcolor", "red")
-   // }
 });
 
 });
@@ -237,9 +230,10 @@ var image5 = "https://openweathermap.org/img/wn/" + response.list[26].weather[0]
 
 
 var citylist = []
-//localStorage.setItem("city", JSON.stringify(citylist));   
+localStorage.setItem("city", JSON.stringify(citylist));   
 
 $("#add-city").on("click", function(event){
+    var citylist = []
     localStorage.setItem("city", JSON.stringify(citylist)); 
     var city = $("#search-input").val().trim();                       
     citylist.push(city); 
