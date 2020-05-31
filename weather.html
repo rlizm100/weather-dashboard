@@ -85,6 +85,7 @@
     //Get date
     var today = new Date();
     var dd = today.getDate();
+    var n = today.toLocaleDateString();
 
     var mm = today.getMonth()+1; 
     var yyyy = today.getFullYear();
@@ -106,11 +107,6 @@
     } 
 
     today = mm+'/'+dd+'/'+yyyy;
-    day1 = mm+'/'+d1+'/'+yyyy;
-    day2 = mm+'/'+d2+'/'+yyyy;
-    day3 = mm+'/'+d3+'/'+yyyy;
-    day4 = mm+'/'+d4+'/'+yyyy;
-    day5 = mm+'/'+d5+'/'+yyyy;
     console.log(today);
 
 // URL we need to query the database
@@ -177,7 +173,15 @@ $.ajax({
        
 // Transfer content to HTML
      $(".uv").text("UV Index: " + response.value);
-
+     
+     if(response.value>6){
+     $(".uv").css("background-color", "red");
+     } else if(response.value<3) {
+     $(".uv").css("background-color", "green");   
+     } else{
+    $(".uv").css("background-color", "yellow"); 
+     }
+     ;
 
 });
 
@@ -202,25 +206,35 @@ var image3 = "https://openweathermap.org/img/wn/" + response.list[21].weather[0]
 var image4 = "https://openweathermap.org/img/wn/" + response.list[28].weather[0].icon + "@2x.png";
 var image5 = "https://openweathermap.org/img/wn/" + response.list[26].weather[0].icon + "@2x.png";
 
+var date1 = response.list[5].dt_txt ;
+var res1 = date1.slice(0,10)
+var date2 = response.list[11].dt_txt ;
+var res2 = date2.slice(0,10)
+var date3 = response.list[21].dt_txt ;
+var res3 = date3.slice(0,10)
+var date4 = response.list[28].dt_txt ;
+var res4 = date4.slice(0,10)
+var date5 = response.list[36].dt_txt ;
+var res5 = date5.slice(0,10)
 
 //Transfer content to HTML
-     $(".dayone").html("<h4>" + day1 + "</h4>");
+     $(".dayone").html("<h4>" + res1 + "</h4>");
      $(".dayone").append("<img src=" + image1 + ">");
      $(".dayone").append("<p>Temp: " + response.list[5].main.temp + "°F</P>");
     $(".dayone").append("<p>Humidity: " + response.list[5].main.humidity + "%</P>");
-    $(".daytwo").html("<h4>" + day2 + "</h4>");
+    $(".daytwo").html("<h4>" + res2 + "</h4>");
     $(".daytwo").append("<img src=" + image2 + ">");
     $(".daytwo").append("<p>Temp: " + response.list[11].main.temp + "°F</P>");
     $(".daytwo").append("<p>Humidity: " + response.list[11].main.humidity + "%</P>");
-    $(".daythree").html("<h4>" + day3 + "</h4>");
+    $(".daythree").html("<h4>" + res3 + "</h4>");
     $(".daythree").append("<img src=" + image3 + ">");
     $(".daythree").append("<p>Temp: " + response.list[21].main.temp + "°F</P>");
     $(".daythree").append("<p>Humidity: " + response.list[21].main.humidity + "%</P>");
-    $(".dayfour").html("<h4>" + day4 + "</h4>");
+    $(".dayfour").html("<h4>" + res4 + "</h4>");
     $(".dayfour").append("<img src=" + image4 + ">");
     $(".dayfour").append("<p>Temp: " + response.list[28].main.temp + "°F</P>");
     $(".dayfour").append("<p>Humidity: " + response.list[28].main.humidity + "%</P>");
-    $(".dayfive").html("<h4>" + day5 + "</h4>");
+    $(".dayfive").html("<h4>" + res5 + "</h4>");
     $(".dayfive").append("<img src=" + image5 + ">");
     $(".dayfive").append("<p>Temp: " + response.list[36].main.temp + "°F</P>");
     $(".dayfive").append("<p>Humidity: " + response.list[36].main.humidity + "%</P>");
@@ -229,14 +243,14 @@ var image5 = "https://openweathermap.org/img/wn/" + response.list[26].weather[0]
 }
 
 
-var citylist = []
-localStorage.setItem("city", JSON.stringify(citylist));   
+
 
 $("#add-city").on("click", function(event){
-    var citylist = []
+   var citylist = []
+   var city = $("#search-input").val().trim();
+   citylist.push(city);
     localStorage.setItem("city", JSON.stringify(citylist)); 
-    var city = $("#search-input").val().trim();                       
-    citylist.push(city); 
+    
 });
 
 // This function handles events search button is clicked
@@ -244,12 +258,10 @@ $("#add-city").on("click", function(event) {
         event.preventDefault();
         // This line grabs the input from the textbox
         var city = $("#search-input").val().trim();
-       // city.addClass("list-group-item");
-         
+               
          $("#citylist").append(`<li class = "list-group-item" data-city = "`+city+`">` + city + `</li>`);
          $(document).on("click", ".list-group-item", lookupcity);
-         localStorage.setItem("city", JSON.stringify(citylist)); 
-         citylist.push(city);
+        
       });
     
 
@@ -319,6 +331,15 @@ $.ajax({
 // Transfer content to HTML
      $(".uv").text("UV Index: " + response.value);
 
+     if(response.value>6){
+     $(".uv").css("background-color", "red");
+     } else if(response.value<3) {
+     $(".uv").css("background-color", "green");   
+     } else{
+    $(".uv").css("background-color", "yellow"); 
+     }
+     ;
+
     });  
 
 });
@@ -342,24 +363,35 @@ var image3 = "https://openweathermap.org/img/wn/" + response.list[21].weather[0]
 var image4 = "https://openweathermap.org/img/wn/" + response.list[28].weather[0].icon + "@2x.png";
 var image5 = "https://openweathermap.org/img/wn/" + response.list[26].weather[0].icon + "@2x.png";
 
+var date1 = response.list[5].dt_txt ;
+var res1 = date1.slice(0,10)
+var date2 = response.list[11].dt_txt ;
+var res2 = date2.slice(0,10)
+var date3 = response.list[21].dt_txt ;
+var res3 = date3.slice(0,10)
+var date4 = response.list[28].dt_txt ;
+var res4 = date4.slice(0,10)
+var date5 = response.list[36].dt_txt ;
+var res5 = date5.slice(0,10)
+
 //Transfer content to HTML
-$(".dayone").html("<h4>" + day1 + "</h4>");
+     $(".dayone").html("<h4>" + res1 + "</h4>");
      $(".dayone").append("<img src=" + image1 + ">");
      $(".dayone").append("<p>Temp: " + response.list[5].main.temp + "°F</P>");
     $(".dayone").append("<p>Humidity: " + response.list[5].main.humidity + "%</P>");
-    $(".daytwo").html("<h4>" + day2 + "</h4>");
+    $(".daytwo").html("<h4>" + res2 + "</h4>");
     $(".daytwo").append("<img src=" + image2 + ">");
     $(".daytwo").append("<p>Temp: " + response.list[11].main.temp + "°F</P>");
     $(".daytwo").append("<p>Humidity: " + response.list[11].main.humidity + "%</P>");
-    $(".daythree").html("<h4>" + day3 + "</h4>");
+    $(".daythree").html("<h4>" + res3 + "</h4>");
     $(".daythree").append("<img src=" + image3 + ">");
     $(".daythree").append("<p>Temp: " + response.list[21].main.temp + "°F</P>");
     $(".daythree").append("<p>Humidity: " + response.list[21].main.humidity + "%</P>");
-    $(".dayfour").html("<h4>" + day4 + "</h4>");
+    $(".dayfour").html("<h4>" + res4 + "</h4>");
     $(".dayfour").append("<img src=" + image4 + ">");
     $(".dayfour").append("<p>Temp: " + response.list[28].main.temp + "°F</P>");
     $(".dayfour").append("<p>Humidity: " + response.list[28].main.humidity + "%</P>");
-    $(".dayfive").html("<h4>" + day5 + "</h4>");
+    $(".dayfive").html("<h4>" + res5 + "</h4>");
     $(".dayfive").append("<img src=" + image5 + ">");
     $(".dayfive").append("<p>Temp: " + response.list[36].main.temp + "°F</P>");
     $(".dayfive").append("<p>Humidity: " + response.list[36].main.humidity + "%</P>");
