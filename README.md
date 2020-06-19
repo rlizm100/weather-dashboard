@@ -14,3 +14,6 @@ WHEN I open the weather dashboard\
 THEN I am presented with the last searched city forecast\
 
 link to site: https://rlizm100.github.io/weather-dashboard/weather.html
+
+![weather.png](https://github.com/rlizm100/weather-dashboard/weather.png)
+
